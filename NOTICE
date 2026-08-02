@@ -1,0 +1,18 @@
+s3overflow
+Copyright 2026 Christoph Sens
+
+Licensed under the Apache License, Version 2.0.
+
+---
+
+This project is an independent Kotlin reimplementation inspired by the API design of
+"payload-offloading-java-common-lib-for-aws"
+(https://github.com/awslabs/payload-offloading-java-common-lib-for-aws):
+
+    Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+    Licensed under the Apache License, Version 2.0.
+
+No source code was copied from that project. s3overflow is a from-scratch implementation
+in Kotlin, using different libraries (aws-sdk-kotlin, kotlinx.serialization, coroutines)
+and a deliberately simplified API surface. This notice is included to comply with Section 4(d)
+of the Apache License, Version 2.0, under which the referenced project is distributed.
