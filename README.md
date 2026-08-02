@@ -46,6 +46,45 @@ store.deleteOriginalPayload(pointer)
 ./gradlew build
 ```
 
+## Installation
+
+Once published to Maven Central:
+
+```kotlin
+dependencies {
+    implementation("com.christoph-sens:s3overflow:0.1.0")
+}
+```
+
+```xml
+<dependency>
+  <groupId>com.christoph-sens</groupId>
+  <artifactId>s3overflow</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+## Publishing (maintainers)
+
+Publishing uses the [Vanniktech Maven Publish plugin](https://github.com/vanniktech/gradle-maven-publish-plugin)
+against Sonatype's Central Publishing Portal. This requires a Central account with the
+`com.christoph-sens` namespace verified (via a DNS TXT record on `christoph-sens.com`) and a GPG
+signing key. Set the following in `~/.gradle/gradle.properties` (never commit these):
+
+```properties
+mavenCentralUsername=...
+mavenCentralPassword=...
+signing.keyId=...
+signing.password=...
+signing.secretKeyRingFile=...
+```
+
+Then bump `version` in [build.gradle.kts](build.gradle.kts) and run:
+
+```bash
+./gradlew publishToMavenCentral
+```
+
 ## Contributing
 
 Contributions are welcome — see [CONTRIBUTING](CONTRIBUTING.md). This project follows the
