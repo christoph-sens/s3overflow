@@ -27,6 +27,17 @@ dependencies {
     testRuntimeOnly(libs.slf4j.simple)
 }
 
+// The Kotlin Gradle plugin resolves Bouncy Castle 1.84 for its publishing validation tasks
+// (GHSA-qp49-qgx5-5m26, GHSA-9pwp-9qqc-pr26). Build-time only; align all BC modules on the fixed release.
+configurations.matching { it.name == "kotlinBouncyCastleConfiguration" }.configureEach {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.bouncycastle") {
+            useVersion("1.86")
+            because("Bouncy Castle < 1.85 has known vulnerabilities")
+        }
+    }
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
