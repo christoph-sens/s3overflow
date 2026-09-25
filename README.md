@@ -9,9 +9,10 @@ transparently offloads message payloads that exceed the SQS/SNS message size lim
 
 Part of a family: **s3overflow** (payload store) · [sqsoverflow](https://github.com/christoph-sens/sqsoverflow) (SQS client) · [snsoverflow](https://github.com/christoph-sens/snsoverflow) (SNS client).
 
-> **Message size limits:** SQS accepts up to 1 MiB per message; SNS topics accept 256 KiB by default and up
-> to 1 MiB when the `MaximumMessageSize` topic attribute is raised. `SQS_SNS_MAX_INLINE_PAYLOAD_SIZE_BYTES`
-> is 256 KiB, the value that is safe for both services with default settings.
+> **Message size limits:** SQS accepts up to 1 MiB per message (`SQS_MAX_MESSAGE_SIZE_BYTES`); SNS topics
+> accept 256 KiB by default (`SNS_DEFAULT_MAX_MESSAGE_SIZE_BYTES`) and up to 1 MiB when the
+> `MaximumMessageSize` topic attribute is raised. The former shared constant
+> `SQS_SNS_MAX_INLINE_PAYLOAD_SIZE_BYTES` (256 KiB) is deprecated.
 
 ## Why a reimplementation
 
@@ -40,7 +41,7 @@ val store: PayloadStore = S3BackedPayloadStore(s3Client, bucketName = "my-payloa
 
 // Only offload when necessary
 val pointer =
-    if (payloadSizeInBytes(message) > SQS_SNS_MAX_INLINE_PAYLOAD_SIZE_BYTES) {
+    if (payloadSizeInBytes(message) > SQS_MAX_MESSAGE_SIZE_BYTES) {
         store.storeOriginalPayload(message) // generates a random S3 key automatically
     } else {
         message
