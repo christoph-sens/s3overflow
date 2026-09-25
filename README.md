@@ -1,7 +1,17 @@
 # s3overflow
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.christoph-sens/s3overflow)](https://central.sonatype.com/artifact/com.christoph-sens/s3overflow)
+[![CI](https://github.com/christoph-sens/s3overflow/actions/workflows/ci.yml/badge.svg)](https://github.com/christoph-sens/s3overflow/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+
 Kotlin reimplementation of [payload-offloading-java-common-lib-for-aws](https://github.com/awslabs/payload-offloading-java-common-lib-for-aws):
-transparently offloads message payloads that exceed the SQS/SNS 256 KB limit to S3.
+transparently offloads message payloads that exceed the SQS/SNS message size limit to S3.
+
+Part of a family: **s3overflow** (payload store) · [sqsoverflow](https://github.com/christoph-sens/sqsoverflow) (SQS client) · [snsoverflow](https://github.com/christoph-sens/snsoverflow) (SNS client).
+
+> **Message size limits:** SQS accepts up to 1 MiB per message; SNS topics accept 256 KiB by default and up
+> to 1 MiB when the `MaximumMessageSize` topic attribute is raised. `SQS_SNS_MAX_INLINE_PAYLOAD_SIZE_BYTES`
+> is 256 KiB, the value that is safe for both services with default settings.
 
 ## Why a reimplementation
 
@@ -47,8 +57,6 @@ store.deleteOriginalPayload(pointer)
 ```
 
 ## Installation
-
-[![Maven Central](https://img.shields.io/maven-central/v/com.christoph-sens/s3overflow)](https://central.sonatype.com/artifact/com.christoph-sens/s3overflow)
 
 ```kotlin
 dependencies {
