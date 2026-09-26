@@ -8,6 +8,7 @@ Kotlin reimplementation of [payload-offloading-java-common-lib-for-aws](https://
 transparently offloads message payloads that exceed the SQS/SNS message size limit to S3.
 
 Part of a family: **s3overflow** (payload store) · [sqsoverflow](https://github.com/christoph-sens/sqsoverflow) (SQS client) · [snsoverflow](https://github.com/christoph-sens/snsoverflow) (SNS client).
+
 Background, migration guide and design notes: [Large SQS and SNS messages in Kotlin](https://christoph-sens.github.io/2026/09/large-sqs-sns-messages-in-kotlin/) on the [blog](https://christoph-sens.github.io/).
 
 > **Message size limits:** SQS accepts up to 1 MiB per message (`SQS_MAX_MESSAGE_SIZE_BYTES`); SNS topics
