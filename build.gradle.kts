@@ -46,8 +46,9 @@ mavenPublishing {
     pom {
         name.set("s3overflow")
         description.set(
-            "Kotlin library for offloading SQS/SNS message payloads that exceed the message size " +
-                "limit to S3, based on aws-sdk-kotlin and coroutines.",
+            "S3 payload store for the Kotlin SQS/SNS extended clients sqsoverflow and snsoverflow: " +
+                "offloads message payloads that exceed the SQS/SNS message size limit to S3, based on " +
+                "aws-sdk-kotlin and coroutines.",
         )
         url.set("https://github.com/christoph-sens/s3overflow")
         licenses {
