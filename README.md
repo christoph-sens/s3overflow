@@ -4,8 +4,11 @@
 [![CI](https://github.com/christoph-sens/s3overflow/actions/workflows/ci.yml/badge.svg)](https://github.com/christoph-sens/s3overflow/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
-Kotlin reimplementation of [payload-offloading-java-common-lib-for-aws](https://github.com/awslabs/payload-offloading-java-common-lib-for-aws):
-transparently offloads message payloads that exceed the SQS/SNS message size limit to S3.
+The S3 payload store behind the Kotlin extended clients [sqsoverflow](https://github.com/christoph-sens/sqsoverflow)
+and [snsoverflow](https://github.com/christoph-sens/snsoverflow): stores message payloads that exceed the
+SQS/SNS message size limit in S3 and replaces them with a small pointer. An independent Kotlin
+reimplementation of [payload-offloading-java-common-lib-for-aws](https://github.com/awslabs/payload-offloading-java-common-lib-for-aws)
+on [aws-sdk-kotlin](https://github.com/awslabs/aws-sdk-kotlin).
 
 Part of a family: **s3overflow** (payload store) · [sqsoverflow](https://github.com/christoph-sens/sqsoverflow) (SQS client) · [snsoverflow](https://github.com/christoph-sens/snsoverflow) (SNS client).
 
