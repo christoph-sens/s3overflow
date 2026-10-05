@@ -13,6 +13,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import kotlin.test.Test
 
 class S3BackedPayloadStoreTest {
@@ -79,5 +80,35 @@ class S3BackedPayloadStoreTest {
                     },
                 )
             }
+        }
+
+    @Test
+    fun `rejects reading a pointer into a foreign bucket`() {
+        val pointer = PayloadS3Pointer(s3BucketName = "someone-elses-bucket", s3Key = "secret").toJson()
+
+        assertThatThrownBy { runTest { store.getOriginalPayload(pointer) } }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("someone-elses-bucket")
+        coVerify(exactly = 0) { s3Client.getObject(any<GetObjectRequest>(), any<suspend (GetObjectResponse) -> String?>()) }
+    }
+
+    @Test
+    fun `rejects deleting a pointer into a foreign bucket`() {
+        val pointer = PayloadS3Pointer(s3BucketName = "someone-elses-bucket", s3Key = "important").toJson()
+
+        assertThatThrownBy { runTest { store.deleteOriginalPayload(pointer) } }
+            .isInstanceOf(IllegalArgumentException::class.java)
+        coVerify(exactly = 0) { s3Client.deleteObject(any<DeleteObjectRequest>()) }
+    }
+
+    @Test
+    fun `accepts pointers into additional buckets`() =
+        runTest {
+            coEvery { s3Client.deleteObject(any<DeleteObjectRequest>()) } returns DeleteObjectResponse {}
+            val sharedStore = S3BackedPayloadStore(s3Client, bucketName = "my-bucket", additionalBucketNames = setOf("other-producer"))
+
+            sharedStore.deleteOriginalPayload(PayloadS3Pointer(s3BucketName = "other-producer", s3Key = "k").toJson())
+
+            coVerify { s3Client.deleteObject(withArg<DeleteObjectRequest> { assertThat(it.bucket).isEqualTo("other-producer") }) }
         }
 }
