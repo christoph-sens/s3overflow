@@ -69,6 +69,34 @@ val original = store.getOriginalPayload(pointer)
 store.deleteOriginalPayload(pointer)
 ```
 
+## Operating the payload bucket
+
+**Use a dedicated bucket.** Pointers travel inside messages, so anyone who can send to the queue or
+topic decides which object a consumer reads and, with cleanup enabled, deletes. `S3BackedPayloadStore`
+only accepts pointers into its own `bucketName`; accept more buckets explicitly, for example when several
+producers with their own buckets share a queue:
+
+```kotlin
+S3BackedPayloadStore(s3Client, bucketName = "my-payload-bucket", additionalBucketNames = setOf("other-producer-bucket"))
+```
+
+A pointer can still name any key in an accepted bucket, so keep nothing else in it and grant the
+consumer only `s3:GetObject` and `s3:DeleteObject` on it.
+
+**Add a lifecycle rule.** Some payloads are never deleted by a consumer: a send that fails after the
+upload, failed entries of a batch, messages that expire or end in a dead-letter queue, `purgeQueue`,
+and SNS fan-out with cleanup disabled. An S3 lifecycle rule that expires objects after the longest
+retention period of the queues involved (at most 14 days for SQS) plus a margin removes them:
+
+```bash
+aws s3api put-bucket-lifecycle-configuration --bucket my-payload-bucket --lifecycle-configuration \
+  '{"Rules":[{"ID":"expire-payloads","Status":"Enabled","Filter":{},"Expiration":{"Days":15}}]}'
+```
+
+**SNS fan-out:** a topic delivers the same pointer to every subscribed queue, so all subscribers read
+the same object. Disable `cleanupS3Payload` in their sqsoverflow clients and rely on the lifecycle
+rule, or the first consumer to delete its message removes the payload for all others.
+
 ## Build
 
 ```bash
