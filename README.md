@@ -34,9 +34,22 @@ keeps only the actual core and deliberately simplifies it:
 | `ServerSideEncryptionStrategy`/`-Factory`/`AwsManagedCmk`/`CustomerKey` (client-side encryption) | deliberately dropped — encryption is configured via SSE-S3/SSE-KMS **at the bucket level**, not in client code |
 | 18 classes | 4 files (`PayloadStore`, `S3BackedPayloadStore`, `PayloadS3Pointer`, `PayloadSize`) |
 
-**Note:** the pointer's JSON format is deliberately a plain `{"s3BucketName":"...","s3Key":"..."}`
-without Jackson's type-information wrapper — it is therefore *not* byte-identical to the original
-pointer format. For a fresh build with no existing Java consumers, that's the simpler, more robust choice.
+## Pointer format
+
+Since 2.0.0 the pointer is written exactly like the AWS Java libraries write it, including Jackson's
+type-information wrapper:
+
+```json
+["software.amazon.payloadoffloading.PayloadS3Pointer",{"s3BucketName":"my-payload-bucket","s3Key":"..."}]
+```
+
+Pointers written by the Java libraries can be read, and the Java libraries can read pointers written
+by s3overflow. The test suite checks this against a pointer produced by payloadoffloading-common 2.2.0.
+Reading also accepts the plain `{"s3BucketName":"...","s3Key":"..."}` object that versions before
+2.0.0 wrote.
+
+**Upgrading from 1.x:** a 1.x reader cannot parse the new format. Upgrade all consumers first, then
+the producers.
 
 ## Usage
 
